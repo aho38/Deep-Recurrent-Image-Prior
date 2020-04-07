@@ -9,6 +9,11 @@ from torchvision.datasets import MNIST
 from torchvision.transforms import ToTensor
 from matplotlib.pyplot import imshow, pause
 
+"""
+By Alex Ho AND ALEX HO ONLY
+ASSISTED BY NO ONE
+"""
+
 def getData(datasets,batch_size=1):
 
     if datasets == 'MNIST':
@@ -35,10 +40,36 @@ def getPlot(img_np):
     imshow(grid[1,:,:],cmap=plt.get_cmap('gray'))
 
 
+def optim(num_epochs, input, true, net , train, n_steps, optimizer, total_step = 1):
+    """Optimization of our funciton
+
+    Args:
+        num_epochs: number of epochs
+        input: our input to our network
+        true: true label that is expected
+        net: our network
+        train: training algorithm that spit out loss value and our output image
+    """
+    for epoch in range(num_epochs):
+
+        sumloss = 0
+
+        for i in range(total_step):
+            out = net(input,n_steps)
+            out.size()
+            loss1, output = train(out,true)
+            sumloss += loss1
+
+        loss = sumloss/total_step
+
+        print('Epoch [{}/{}], Loss: {:.4f}'.format(epoch+1, num_epochs, loss))
+
+        getPlot(torch.tensor(out))
+
 class RNN(nn.Module):
     """docstring for RNN."""
 
-    def __init__(self, n_steps, n_inputs, n_neurons, gamma=0.001, epsilon=0.01):
+    def __init__(self, n_neurons, gamma=0.001, epsilon=0.01):
         super(RNN, self).__init__()
         self.W = nn.Parameter(torch.randn(n_neurons, n_neurons))
         self.b = nn.Parameter(torch.randn(1,n_neurons))
@@ -46,14 +77,15 @@ class RNN(nn.Module):
         self.epsilon = epsilon
         self.n_neurons = n_neurons
 
-    def forward(self, X):
+    def forward(self, X, n_steps=30):
         output = []
         self.ht = torch.zeros(X.shape[0], self.n_neurons)
         states = []
         states.append(self.ht)
 
         for i in range(n_steps):
-            alpha = torch.mm(states[i],W)+self.b
+            alpha = torch.mm(states[i],self.W)+self.b
             self.ht = states[i] + self.epsilon*torch.tanh(alpha)
             states.append(self.ht)
-        return states
+            out = self.ht
+        return out
