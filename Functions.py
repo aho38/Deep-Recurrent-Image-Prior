@@ -37,7 +37,8 @@ def get_noisy_image(img_np, sigma):
 
 def getPlot(img_np):
     grid = torchvision.utils.make_grid(img_np,nrow=2,padding=0)
-    imshow(grid[1,:,:],cmap=plt.get_cmap('gray'))
+    plt.imshow(grid[1,:,:],cmap=plt.get_cmap('gray'))
+    plt.show()
 
 
 def optim(num_epochs, input, true, net , train, n_steps, optimizer, total_step = 1):
